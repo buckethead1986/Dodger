@@ -36,6 +36,7 @@ var keys = {
   RIGHT: 39,
   LEFT: 37,
   DOWN: 40
+  P: 80
 };
 
 function makeStar() {
@@ -263,8 +264,13 @@ function checkIfLostOrScoredPoints(
   }
 }
 
+
+
 function update() {
   //-------Y movement
+  if (pressed[keys.P]) {
+    pauseGame()
+  }
   if (pressed[keys.UP] && sprite.y < 100) {
     //check boundary for upward movement
     sprite.dy = 5;
