@@ -7,11 +7,9 @@ let makeStarCounter = 0;
 const game = document.getElementById("game");
 let endGame = false;
 let points = 0;
-// let spriteSize = 30;
+let spriteSize = 30;
 
-// let sprite = document.getElementById("sprite");
 var sprite = {
-  // el: document.getElementById("sprite"), //sprite.el.css doesnt work for the render function with this, but does with jquery
   el: $("#sprite"),
   x: 280,
   y: 10,
@@ -21,8 +19,13 @@ var sprite = {
 
 const pressed = [];
 $(document).on("keydown keyup", function(e) {
-  if (sprite.x >= 0 && sprite.x <= 570 && sprite.y <= 80 && sprite.y >= 0) {
-    //check for boundary conflicts before adding movement queues onto 'pressed'
+  //check for boundary conflicts before adding movement queues onto 'pressed'. Otherwise, I got weird delays while the extraneous 'right' queues were dequeued, for example.
+  if (
+    sprite.x >= 0 &&
+    sprite.x <= 600 - spriteSize && //allows for changes in sprite dimensions.
+    sprite.y <= 100 &&
+    sprite.y >= 0
+  ) {
     pressed[e.which] = e.type === "keydown";
   }
   e.preventDefault();
@@ -55,27 +58,34 @@ function makeBomb() {
 
 function loop() {
   //normal game mechanics, update, re-render elements, loop every 1/60th sec
-  checkGameDifficulty();
-  update();
-  render();
+  checkGameDifficulty(); //game gets harder with the more points you have
+  update(); //sprite movement
+  render(); //
+  //frequency of bomb drops. higher = fewer
   if (makeBombCounter % bombFreq === 0) {
-    //frequency of bomb drops. higher = fewer
     makeBomb();
   }
+  //frequency of star drops. higher = fewer
   if (makeStarCounter % starFreq === 0) {
-    //frequency of star drops. higher = fewer
     makeStar();
   }
-  makeStarCounter += 0.5;
-  makeBombCounter += 1;
+  makeStarCounter += 0.5; //increase frequency of star appearance
+  makeBombCounter += 1; //increase frequency of bomb appearance
   moveBombOrStar("star"); //abstracted because similar mechanics.  Not sure I its worth the loss of human readability
   moveBombOrStar("bomb");
+  //end game conditions. endGame is false by default
   if (!endGame) {
-    //end game conditions
     setTimeout(loop, 17);
   } else {
     loseGame();
   }
+}
+
+function changeSpriteSize() {
+  sprite.el.css({
+    width: spriteSize + "px",
+    height: spriteSize + "px"
+  });
 }
 
 function checkGameDifficulty() {
@@ -83,8 +93,8 @@ function checkGameDifficulty() {
     bombSpeed = 2;
     bombFreq = 60;
     starFreq = 90;
-    // debugger;
-    // sprite.style.width = spriteSize + "px";
+    spriteSize = 27;
+    changeSpriteSize();
   }
   if (points === 80) {
     bombSpeed = 3;
@@ -97,6 +107,8 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 20;
     starFreq = 60;
+    spriteSize = 24;
+    changeSpriteSize();
   }
   if (points === 160) {
     bombSpeed = 4;
@@ -109,6 +121,8 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 10;
     starFreq = 30;
+    spriteSize = 21;
+    changeSpriteSize();
   }
   if (points === 220) {
     bombSpeed = 5;
@@ -121,6 +135,8 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 6;
     starFreq = 20;
+    spriteSize = 18;
+    changeSpriteSize();
   }
   if (points === 300) {
     bombSpeed = 5;
@@ -133,6 +149,8 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 4;
     starFreq = 10;
+    spriteSize = 15;
+    changeSpriteSize();
   }
   if (points === 380) {
     bombSpeed = 5;
@@ -145,6 +163,8 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 3;
     starFreq = 6;
+    spriteSize = 10;
+    changeSpriteSize();
   }
   if (points === 460) {
     bombSpeed = 5;
@@ -174,6 +194,7 @@ function loseGame() {
 }
 
 function moveBombOrStar(bombOrStarString) {
+  //stars and bombs have same movement style, not sure if this made things cleaner or less human readable.
   const allBombsOrStars = document.getElementsByClassName(
     `${bombOrStarString}`
   );
@@ -205,8 +226,8 @@ function checkIfLostOrScoredPoints(
   if (
     //stars and bombs same size, same hit box criteria
     bombOrStarBottom + 10 >= sprite.y &&
-    bombOrStarBottom <= sprite.y + 30 &&
-    (bombOrStarLeft + 10 >= sprite.x && bombOrStarLeft <= sprite.x + 30)
+    bombOrStarBottom <= sprite.y + spriteSize &&
+    (bombOrStarLeft + 10 >= sprite.x && bombOrStarLeft <= sprite.x + spriteSize)
   ) {
     if (bombOrStarString === "bomb") {
       //lose game
@@ -222,7 +243,7 @@ function checkIfLostOrScoredPoints(
 
 function update() {
   //-------Y movement
-  if (pressed[keys.UP] && sprite.y < 80) {
+  if (pressed[keys.UP] && sprite.y < 100) {
     //check boundary for upward movement
     sprite.dy = 5;
   } else if (pressed[keys.DOWN] && sprite.y > 0) {
@@ -232,7 +253,7 @@ function update() {
     sprite.dy = 0;
   }
   //-------X movement
-  if (pressed[keys.RIGHT] && sprite.x < 570) {
+  if (pressed[keys.RIGHT] && sprite.x < 600 - spriteSize) {
     //check boundary for rightward movement
     sprite.dx = 5;
   } else if (pressed[keys.LEFT] && sprite.x > 0) {
