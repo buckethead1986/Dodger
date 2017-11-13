@@ -1,2 +1,2 @@
 # Dodger
-Side scroller, dodge the red, collect the green
+Top down scroller, dodge the red, collect the green

@@ -1,0 +1,76 @@
+#sprite {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  bottom: 10px;
+  left: 280px;
+  background-color: blue;
+}
+
+#score {
+  bottom: 380px;
+  left: 0px;
+  position: absolute;
+  /*background-color: white;*/
+  color: white;
+}
+
+.bomb {
+  width: 10px;
+  height: 10px;
+  bottom: 200px;
+  left: 200px;
+  background-color: red;
+  position: absolute;
+}
+.star {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%
+  bottom: 200px;
+  left: 200px;
+  background-color: green;
+  position: absolute;
+}
+
+#game {
+  background-color: #111;
+  height: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  width: 600px;
+}
+
+#calltoaction {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  font: bold 24px Arial;
+}
+#endGame {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  font: bold 24px Arial;
+}
+
+#calltoaction:after {
+  content: " ";
+  height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+}
