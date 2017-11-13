@@ -8,6 +8,18 @@ const game = document.getElementById("game");
 let endGame = false;
 let points = 0;
 let spriteSize = 30;
+let isEs = false;
+
+document.addEventListener("keydown", function(e) {
+  //turn the stars into
+  if (e.which === 69) {
+    if (isEs) {
+      isEs = false;
+    } else {
+      isEs = true;
+    }
+  }
+});
 
 var sprite = {
   el: $("#sprite"),
@@ -41,8 +53,17 @@ var keys = {
 
 function makeStar() {
   const xValue = Math.random() * 590;
-  const newStar = document.createElement("div");
-  newStar.className = "star";
+  let newStar;
+  if (isEs) {
+    newStar = document.createElement("img");
+    newStar.src = "es_face.png";
+    newStar.className = "star";
+    // newStar.classname = "starEs";
+    // newStar.setAttribute('img')
+  } else {
+    newStar = document.createElement("div");
+    newStar.className = "star";
+  }
   newStar.style.left = xValue + "px";
   newStar.style.bottom = "390px"; //appears just above game window
   game.appendChild(newStar);
@@ -91,6 +112,107 @@ function changeSpriteSize() {
   sprite.el.css({
     width: spriteSize + "px",
     height: spriteSize + "px"
+  });
+}
+
+function loseGame() {
+  const endGame = document.createElement("div");
+  endGame.id = "endGame";
+  endGame.innerText = `Great Game! You scored ${points} points`;
+  game.appendChild(endGame);
+}
+
+function moveBombOrStar(bombOrStarString) {
+  //stars and bombs have same movement style, not sure if this made things cleaner or less human readable.
+  const allBombsOrStars = document.getElementsByClassName(
+    `${bombOrStarString}`
+  );
+  for (const bombOrStar of allBombsOrStars) {
+    let bombOrStarBottom = parseInt(bombOrStar.style.bottom.replace("px", ""));
+    let bombOrStarLeft = parseInt(bombOrStar.style.left.replace("px", ""));
+    var newY;
+    if (bombOrStarString === "bomb") {
+      newY = bombOrStarBottom - bombSpeed;
+    } else if (bombOrStarString === "star") {
+      newY = bombOrStarBottom - starSpeed;
+    }
+    bombOrStar.style.bottom = newY + "px";
+    checkIfLostOrScoredPoints(
+      bombOrStar,
+      bombOrStarString,
+      bombOrStarBottom,
+      bombOrStarLeft
+    );
+  }
+}
+
+function checkIfLostOrScoredPoints(
+  bombOrStar,
+  bombOrStarString,
+  bombOrStarBottom,
+  bombOrStarLeft
+) {
+  if (
+    //stars and bombs same size, same hit box criteria
+    bombOrStarBottom + 10 >= sprite.y &&
+    bombOrStarBottom <= sprite.y + spriteSize &&
+    (bombOrStarLeft + 10 >= sprite.x && bombOrStarLeft <= sprite.x + spriteSize)
+  ) {
+    if (bombOrStarString === "bomb") {
+      //lose game
+      endGame = true;
+    } else if (bombOrStarString === "star") {
+      //score some points
+      bombOrStar.remove();
+      points += 10;
+      document.getElementById("score").innerText = `Score: ${points}`;
+    }
+  }
+}
+
+function pauseGame() {
+  //conditional set in loop() function, this triggers on 'p' press. Overlays game, prevents keystroke input, resumes on click.
+  const pause = document.createElement("img");
+  pause.id = "pause";
+  pause.src = "es_face.png";
+  game.appendChild(pause);
+  document.addEventListener("click", function(e) {
+    e.preventDefault();
+    pause.parentNode.removeChild(pause);
+    loop();
+  });
+}
+
+function update() {
+  // -------Y movement
+  if (pressed[keys.UP] && sprite.y < 100) {
+    //check boundary for upward movement
+    sprite.dy = 5;
+  } else if (pressed[keys.DOWN] && sprite.y > 0) {
+    //check boundary for downward movement
+    sprite.dy = -5;
+  } else {
+    sprite.dy = 0;
+  }
+  //-------X movement
+  if (pressed[keys.RIGHT] && sprite.x < 600 - spriteSize) {
+    //check boundary for rightward movement
+    sprite.dx = 5;
+  } else if (pressed[keys.LEFT] && sprite.x > 0) {
+    //check boundary for leftward movement
+    sprite.dx = -5;
+  } else {
+    sprite.dx = 0;
+  }
+  sprite.y += sprite.dy;
+  sprite.x += sprite.dx;
+}
+
+function render() {
+  //update x and y locations to new positions.
+  sprite.el.css({
+    bottom: sprite.y,
+    left: sprite.x
   });
 }
 
@@ -211,105 +333,34 @@ function checkGameDifficulty() {
     bombFreq = 2;
     starFreq = 6;
   }
-}
-
-function loseGame() {
-  const endGame = document.createElement("div");
-  endGame.id = "endGame";
-  endGame.innerText = `Great Game! You scored ${points} points`;
-  game.appendChild(endGame);
-}
-
-function moveBombOrStar(bombOrStarString) {
-  //stars and bombs have same movement style, not sure if this made things cleaner or less human readable.
-  const allBombsOrStars = document.getElementsByClassName(
-    `${bombOrStarString}`
-  );
-  for (const bombOrStar of allBombsOrStars) {
-    let bombOrStarBottom = parseInt(bombOrStar.style.bottom.replace("px", ""));
-    let bombOrStarLeft = parseInt(bombOrStar.style.left.replace("px", ""));
-    var newY;
-    if (bombOrStarString === "bomb") {
-      newY = bombOrStarBottom - bombSpeed;
-    } else if (bombOrStarString === "star") {
-      newY = bombOrStarBottom - starSpeed;
-    }
-    bombOrStar.style.bottom = newY + "px";
-    checkIfLostOrScoredPoints(
-      bombOrStar,
-      bombOrStarString,
-      bombOrStarBottom,
-      bombOrStarLeft
-    );
+  if (points === 740) {
+    bombSpeed = 9;
+    starSpeed = 4;
+    bombFreq = 2;
+    starFreq = 6;
   }
-}
-
-function checkIfLostOrScoredPoints(
-  bombOrStar,
-  bombOrStarString,
-  bombOrStarBottom,
-  bombOrStarLeft
-) {
-  if (
-    //stars and bombs same size, same hit box criteria
-    bombOrStarBottom + 10 >= sprite.y &&
-    bombOrStarBottom <= sprite.y + spriteSize &&
-    (bombOrStarLeft + 10 >= sprite.x && bombOrStarLeft <= sprite.x + spriteSize)
-  ) {
-    if (bombOrStarString === "bomb") {
-      //lose game
-      endGame = true;
-    } else if (bombOrStarString === "star") {
-      //score some points
-      bombOrStar.remove();
-      points += 10;
-      document.getElementById("score").innerText = `Score: ${points}`;
-    }
+  if (points === 780) {
+    bombSpeed = 9;
+    starSpeed = 5;
+    bombFreq = 2;
+    starFreq = 6;
   }
-}
-
-function pauseGame() {
-  //conditional set in loop() function, this triggers on 'p' press. Overlays game, prevents keystroke input, resumes on click.
-  const pause = document.createElement("div");
-  pause.id = "pause";
-  pause.innerText = "Paused. Click to continue";
-  game.appendChild(pause);
-  document.addEventListener("click", function(e) {
-    e.preventDefault();
-    pause.parentNode.removeChild(pause);
-    loop();
-  });
-}
-
-function update() {
-  // -------Y movement
-  if (pressed[keys.UP] && sprite.y < 100) {
-    //check boundary for upward movement
-    sprite.dy = 5;
-  } else if (pressed[keys.DOWN] && sprite.y > 0) {
-    //check boundary for downward movement
-    sprite.dy = -5;
-  } else {
-    sprite.dy = 0;
+  if (points === 820) {
+    bombSpeed = 9;
+    starSpeed = 5;
+    bombFreq = 2;
+    starFreq = 6;
   }
-  //-------X movement
-  if (pressed[keys.RIGHT] && sprite.x < 600 - spriteSize) {
-    //check boundary for rightward movement
-    sprite.dx = 5;
-  } else if (pressed[keys.LEFT] && sprite.x > 0) {
-    //check boundary for leftward movement
-    sprite.dx = -5;
-  } else {
-    sprite.dx = 0;
+  if (points === 860) {
+    bombSpeed = 10;
+    starSpeed = 5;
+    bombFreq = 2;
+    starFreq = 6;
   }
-  sprite.y += sprite.dy;
-  sprite.x += sprite.dx;
-}
-
-function render() {
-  //update x and y locations to new positions.
-  sprite.el.css({
-    bottom: sprite.y,
-    left: sprite.x
-  });
+  if (points === 900) {
+    bombSpeed = 10;
+    starSpeed = 5;
+    bombFreq = 1;
+    starFreq = 6;
+  }
 }
