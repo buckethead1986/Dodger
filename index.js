@@ -241,8 +241,18 @@ function checkIfLostOrScoredPoints(
   }
 }
 
+function pauseGame() {
+  const pause = document.createElement("div");
+  pause.addEventListener("keydown", function(e) {});
+  pause.innerText = "Paused. Press P to continue";
+}
+
 function update() {
   //-------Y movement
+
+  if (pressed[keys.P]) {
+    pauseGame();
+  }
   if (pressed[keys.UP] && sprite.y < 100) {
     //check boundary for upward movement
     sprite.dy = 5;
