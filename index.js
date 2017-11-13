@@ -1,7 +1,7 @@
-let bombSpeed = 1;
-let starSpeed = 1;
-let bombFreq = 80;
-let starFreq = 100;
+let bombSpeed = 1; //how fast bombs fall
+let starSpeed = 1; //how fast stars fall
+let bombFreq = 80; //how frequently bombs spawn
+let starFreq = 100; //spawn frequency is 'makeStarCounter % starFreq === 0, then spawn.'
 let makeBombCounter = 0; //used to determine difficulty of game and how frequent bomb drops are.
 let makeStarCounter = 0;
 const game = document.getElementById("game");
@@ -17,7 +17,7 @@ var sprite = {
   dy: 0
 };
 
-const pressed = [];
+const pressed = []; //queue of movement commands.
 $(document).on("keydown keyup", function(e) {
   //check for boundary conflicts before adding movement queues onto 'pressed'. Otherwise, I got weird delays while the extraneous 'right' queues were dequeued, for example.
   if (
@@ -56,6 +56,7 @@ function makeBomb() {
   game.appendChild(newBomb);
 }
 
+//main play runner
 function loop() {
   //normal game mechanics, update, re-render elements, loop every 1/60th sec
   checkGameDifficulty(); //game gets harder with the more points you have
@@ -88,6 +89,7 @@ function changeSpriteSize() {
   });
 }
 
+// game gets progressively harder. These were arbitrarily set by me through a few playtests, and get basically impossible :D
 function checkGameDifficulty() {
   if (points === 40) {
     bombSpeed = 2;
@@ -267,11 +269,8 @@ function update() {
 }
 
 function render() {
-  // debugger;
-
   //update x and y locations to new positions.
   sprite.el.css({
-    //this works with jquery, javascript had issues
     bottom: sprite.y,
     left: sprite.x
   });
