@@ -35,7 +35,7 @@ var keys = {
   UP: 38,
   RIGHT: 39,
   LEFT: 37,
-  DOWN: 40
+  DOWN: 40,
   P: 80
 };
 
@@ -59,27 +59,31 @@ function makeBomb() {
 
 //main play runner
 function loop() {
-  //normal game mechanics, update, re-render elements, loop every 1/60th sec
-  checkGameDifficulty(); //game gets harder with the more points you have
-  update(); //sprite movement
-  render(); //
-  //frequency of bomb drops. higher = fewer
-  if (makeBombCounter % bombFreq === 0) {
-    makeBomb();
-  }
-  //frequency of star drops. higher = fewer
-  if (makeStarCounter % starFreq === 0) {
-    makeStar();
-  }
-  makeStarCounter += 0.5; //increase frequency of star appearance
-  makeBombCounter += 1; //increase frequency of bomb appearance
-  moveBombOrStar("star"); //abstracted because similar mechanics.  Not sure I its worth the loss of human readability
-  moveBombOrStar("bomb");
-  //end game conditions. endGame is false by default
-  if (!endGame) {
-    setTimeout(loop, 17);
+  if (pressed[keys.P]) {
+    pauseGame();
   } else {
-    loseGame();
+    //normal game mechanics, update, re-render elements, loop every 1/60th sec
+    checkGameDifficulty(); //game gets harder with the more points you have
+    update(); //sprite movement
+    render(); //
+    //frequency of bomb drops. higher = fewer
+    if (makeBombCounter % bombFreq === 0) {
+      makeBomb();
+    }
+    //frequency of star drops. higher = fewer
+    if (makeStarCounter % starFreq === 0) {
+      makeStar();
+    }
+    makeStarCounter += 0.5; //increase frequency of star appearance
+    makeBombCounter += 1; //increase frequency of bomb appearance
+    moveBombOrStar("star"); //abstracted because similar mechanics.  Not sure I its worth the loss of human readability
+    moveBombOrStar("bomb");
+    //end game conditions. endGame is false by default
+    if (!endGame) {
+      setTimeout(loop, 17);
+    } else {
+      loseGame();
+    }
   }
 }
 
@@ -264,19 +268,21 @@ function checkIfLostOrScoredPoints(
   }
 }
 
-// 
-// function pauseGame() {
-//   const pause = document.createElement("div");
-//   pause.addEventListener("keydown", function(e) {});
-//   pause.innerText = "Paused. Press P to continue";
-// }
-
+function pauseGame() {
+  //conditional set in loop() function, this triggers on 'p' press. Overlays game, prevents keystroke input, resumes on click.
+  const pause = document.createElement("div");
+  pause.id = "pause";
+  pause.innerText = "Paused. Click to continue";
+  game.appendChild(pause);
+  document.addEventListener("click", function(e) {
+    e.preventDefault();
+    pause.parentNode.removeChild(pause);
+    loop();
+  });
+}
 
 function update() {
-  //-------Y movement
-  // if (pressed[keys.P]) {
-  //   pauseGame()
-  // }
+  // -------Y movement
   if (pressed[keys.UP] && sprite.y < 100) {
     //check boundary for upward movement
     sprite.dy = 5;
