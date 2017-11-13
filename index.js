@@ -182,6 +182,30 @@ function checkGameDifficulty() {
     bombFreq = 3;
     starFreq = 6;
   }
+  if (points === 580) {
+    bombSpeed = 8;
+    starSpeed = 3;
+    bombFreq = 3;
+    starFreq = 6;
+  }
+  if (points === 620) {
+    bombSpeed = 8;
+    starSpeed = 3;
+    bombFreq = 3;
+    starFreq = 6;
+  }
+  if (points === 660) {
+    bombSpeed = 8;
+    starSpeed = 4;
+    bombFreq = 3;
+    starFreq = 6;
+  }
+  if (points === 700) {
+    bombSpeed = 7;
+    starSpeed = 4;
+    bombFreq = 2;
+    starFreq = 6;
+  }
 }
 
 function loseGame() {
