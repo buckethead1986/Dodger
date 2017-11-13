@@ -1,7 +1,7 @@
-let bombSpeed = 1;
-let starSpeed = 1;
-let bombFreq = 80;
-let starFreq = 100;
+let bombSpeed = 1; //how fast bombs fall
+let starSpeed = 1; //how fast stars fall
+let bombFreq = 80; //how frequently bombs spawn
+let starFreq = 100; //spawn frequency is 'makeStarCounter % starFreq === 0, then spawn.'
 let makeBombCounter = 0; //used to determine difficulty of game and how frequent bomb drops are.
 let makeStarCounter = 0;
 const game = document.getElementById("game");
@@ -17,7 +17,7 @@ var sprite = {
   dy: 0
 };
 
-const pressed = [];
+const pressed = []; //queue of movement commands.
 $(document).on("keydown keyup", function(e) {
   //check for boundary conflicts before adding movement queues onto 'pressed'. Otherwise, I got weird delays while the extraneous 'right' queues were dequeued, for example.
   if (
@@ -36,6 +36,7 @@ var keys = {
   RIGHT: 39,
   LEFT: 37,
   DOWN: 40
+  P: 80
 };
 
 function makeStar() {
@@ -56,6 +57,7 @@ function makeBomb() {
   game.appendChild(newBomb);
 }
 
+//main play runner
 function loop() {
   //normal game mechanics, update, re-render elements, loop every 1/60th sec
   checkGameDifficulty(); //game gets harder with the more points you have
@@ -88,13 +90,14 @@ function changeSpriteSize() {
   });
 }
 
+// game gets progressively harder. These were arbitrarily set by me through a few playtests, and get basically impossible :D
 function checkGameDifficulty() {
   if (points === 40) {
+    spriteSize = 25;
+    changeSpriteSize();
     bombSpeed = 2;
     bombFreq = 60;
     starFreq = 90;
-    spriteSize = 27;
-    changeSpriteSize();
   }
   if (points === 80) {
     bombSpeed = 3;
@@ -107,10 +110,10 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 20;
     starFreq = 60;
-    spriteSize = 24;
-    changeSpriteSize();
   }
   if (points === 160) {
+    spriteSize = 20;
+    changeSpriteSize();
     bombSpeed = 4;
     starSpeed = 3;
     bombFreq = 10;
@@ -121,8 +124,6 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 10;
     starFreq = 30;
-    spriteSize = 21;
-    changeSpriteSize();
   }
   if (points === 220) {
     bombSpeed = 5;
@@ -131,12 +132,12 @@ function checkGameDifficulty() {
     starFreq = 25;
   }
   if (points === 260) {
+    spriteSize = 15;
+    changeSpriteSize();
     bombSpeed = 5;
     starSpeed = 3;
     bombFreq = 6;
     starFreq = 20;
-    spriteSize = 18;
-    changeSpriteSize();
   }
   if (points === 300) {
     bombSpeed = 5;
@@ -149,10 +150,10 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 4;
     starFreq = 10;
-    spriteSize = 15;
-    changeSpriteSize();
   }
   if (points === 380) {
+    spriteSize = 10;
+    changeSpriteSize();
     bombSpeed = 5;
     starSpeed = 3;
     bombFreq = 3;
@@ -163,8 +164,6 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 3;
     starFreq = 6;
-    spriteSize = 10;
-    changeSpriteSize();
   }
   if (points === 460) {
     bombSpeed = 5;
@@ -182,6 +181,30 @@ function checkGameDifficulty() {
     bombSpeed = 7;
     starSpeed = 3;
     bombFreq = 3;
+    starFreq = 6;
+  }
+  if (points === 580) {
+    bombSpeed = 8;
+    starSpeed = 3;
+    bombFreq = 3;
+    starFreq = 6;
+  }
+  if (points === 620) {
+    bombSpeed = 8;
+    starSpeed = 3;
+    bombFreq = 3;
+    starFreq = 6;
+  }
+  if (points === 660) {
+    bombSpeed = 8;
+    starSpeed = 4;
+    bombFreq = 3;
+    starFreq = 6;
+  }
+  if (points === 700) {
+    bombSpeed = 8;
+    starSpeed = 4;
+    bombFreq = 2;
     starFreq = 6;
   }
 }
@@ -241,18 +264,19 @@ function checkIfLostOrScoredPoints(
   }
 }
 
-function pauseGame() {
-  const pause = document.createElement("div");
-  pause.addEventListener("keydown", function(e) {});
-  pause.innerText = "Paused. Press P to continue";
-}
+// 
+// function pauseGame() {
+//   const pause = document.createElement("div");
+//   pause.addEventListener("keydown", function(e) {});
+//   pause.innerText = "Paused. Press P to continue";
+// }
+
 
 function update() {
   //-------Y movement
-
-  if (pressed[keys.P]) {
-    pauseGame();
-  }
+  // if (pressed[keys.P]) {
+  //   pauseGame()
+  // }
   if (pressed[keys.UP] && sprite.y < 100) {
     //check boundary for upward movement
     sprite.dy = 5;
@@ -277,11 +301,8 @@ function update() {
 }
 
 function render() {
-  // debugger;
-
   //update x and y locations to new positions.
   sprite.el.css({
-    //this works with jquery, javascript had issues
     bottom: sprite.y,
     left: sprite.x
   });
