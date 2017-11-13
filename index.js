@@ -92,11 +92,11 @@ function changeSpriteSize() {
 // game gets progressively harder. These were arbitrarily set by me through a few playtests, and get basically impossible :D
 function checkGameDifficulty() {
   if (points === 40) {
+    spriteSize = 25;
+    changeSpriteSize();
     bombSpeed = 2;
     bombFreq = 60;
     starFreq = 90;
-    spriteSize = 27;
-    changeSpriteSize();
   }
   if (points === 80) {
     bombSpeed = 3;
@@ -109,10 +109,10 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 20;
     starFreq = 60;
-    spriteSize = 24;
-    changeSpriteSize();
   }
   if (points === 160) {
+    spriteSize = 20;
+    changeSpriteSize();
     bombSpeed = 4;
     starSpeed = 3;
     bombFreq = 10;
@@ -123,8 +123,6 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 10;
     starFreq = 30;
-    spriteSize = 21;
-    changeSpriteSize();
   }
   if (points === 220) {
     bombSpeed = 5;
@@ -133,12 +131,12 @@ function checkGameDifficulty() {
     starFreq = 25;
   }
   if (points === 260) {
+    spriteSize = 15;
+    changeSpriteSize();
     bombSpeed = 5;
     starSpeed = 3;
     bombFreq = 6;
     starFreq = 20;
-    spriteSize = 18;
-    changeSpriteSize();
   }
   if (points === 300) {
     bombSpeed = 5;
@@ -151,10 +149,10 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 4;
     starFreq = 10;
-    spriteSize = 15;
-    changeSpriteSize();
   }
   if (points === 380) {
+    spriteSize = 10;
+    changeSpriteSize();
     bombSpeed = 5;
     starSpeed = 3;
     bombFreq = 3;
@@ -165,8 +163,6 @@ function checkGameDifficulty() {
     starSpeed = 3;
     bombFreq = 3;
     starFreq = 6;
-    spriteSize = 10;
-    changeSpriteSize();
   }
   if (points === 460) {
     bombSpeed = 5;
