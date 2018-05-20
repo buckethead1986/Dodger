@@ -13,10 +13,13 @@
       <div id="score">Score:   </div>
       <p id="calltoaction" onclick="$(this).remove();loop()">
         Avoid the Red! Collect the Green! Play with Arrow Keys.
-      </p>
     </div>
+    <div id="leaderboard">
+      <tr id="leaderboard-data">
+  </tr>
 
-    </script>
+    </div>
+    <script type="text/javascript" src="difficulty.js"></script>
     <script type="text/javascript" src="index.js"></script>
   </body>
 </html>
