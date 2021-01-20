@@ -4,7 +4,7 @@
   height: 30px;
   bottom: 10px;
   left: 280px;
-  background-color: blue;
+  background-color: yellow;
 }
 
 #score {
@@ -27,6 +27,7 @@
   background-color: red;
   position: absolute;
 }
+
 .star {
   width: 10px;
   height: 10px;
